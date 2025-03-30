@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unkvey - Share and Discover Questionnaires</title>
+    <style>
+        /* Reset and basic styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header styles - Changed to royal purple */
+        header {
+            background-color: #5e35b1;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .user-info {
+                margin-top: 1rem;
+                align-self: flex-start;
+            }
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        @media (max-width: 576px) {
+            nav ul li {
+                margin-left: 0;
+                margin-right: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* User info in header */
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .user-points {
+            background-color: #4527a0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .badge {
+            margin-left: 8px;
+            font-size: 1.2rem;
+        }
+
+        .badge.gold {
+            color: gold;
+        }
+
+        .badge.silver {
+            color: silver;
+        }
+
+        .badge.bronze {
+            color: #cd7f32;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            width: 100%;
+        }
+
+        /* Hero section */
+        .hero {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #5e35b1;
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #5e35b1;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #4527a0;
+        }
+
+        /* Survey listings */
+        .surveys {
+            margin-top: 2rem;
+        }
+
+        .survey-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 576px) {
+            .survey-filters {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-options {
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            .filter-options select {
+                width: 100%;
+            }
+        }
+
+        .filter-options select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .survey-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 576px) {
+            .survey-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .survey-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .survey-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .survey-reward-banner {
+            background-color: #ffd700;
+            color: #333;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .survey-card-content {
+            padding: 1.5rem;
+        }
+
+        .survey-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .survey-meta {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .creator-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .creator-badge {
+            margin-left: 5px;
+            font-size: 0.9rem;
+        }
+
+        .survey-desc {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background-color: #ede7f6;
+            color: #5e35b1;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .survey-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 400px) {
+            .survey-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .survey-actions .btn {
+                margin-top: 0.5rem;
+            }
+        }
+
+        .points-reward {
+            background-color: #f3e5f5;
+            border: 1px solid #e1bee7;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #6a1b9a;
+        }
+
+        /* Badge showcase section */
+        .badge-showcase {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .badge-showcase h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #5e35b1;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 576px) {
+            .badge-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .badge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+        }
+
+        .badge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-item.gold .badge-icon {
+            color: gold;
+        }
+
+        .badge-item.silver .badge-icon {
+            color: silver;
+        }
+
+        .badge-item.bronze .badge-icon {
+            color: #cd7f32;
+        }
+
+        .badge-item.blue .badge-icon {
+            color: #1e90ff;
+        }
+
+        .badge-item.green .badge-icon {
+            color: #32cd32;
+        }
+
+        .badge-item.purple .badge-icon {
+            color: #9370db;
+        }
+
+        .badge-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .badge-req {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        /* Leaderboard section */
+        .leaderboard {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .leaderboard h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #5e35b1;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .leaderboard-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .leaderboard-rank {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .rank-1, .rank-2, .rank-3 {
+            font-size: 1.2rem;
+        }
+
+        .rank-1 {
+            color: gold;
+        }
+
+        .rank-2 {
+            color: silver;
+        }
+
+        .rank-3 {
+            color: #cd7f32;
+        }
+
+        .user-row {
+            background-color: #ede7f6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .hero, .badge-showcase, .leaderboard {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <div class="logo">Unkvey</div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Browse</a></li>
+                <li><a href="#">Create</a></li>
+                <li><a href="#">My Surveys</a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            <div class="user-avatar">M</div>
+            <span>MikeUser</span>
+            <span class="user-points">2,450 pts</span>
+            <span class="badge gold" title="Research Master">★</span>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <div class="container">
+        <!-- Hero section -->
+        <section class="hero">
+            <h1>Share Your Research. Earn Rewards.</h1>
+            <p>Create surveys, participate in studies, earn points and unlock prestigious badges.</p>
+            <a href="#" class="btn">Create New Survey</a>
+        </section>
+
+        <!-- Survey listings -->
+        <section class="surveys">
+            <div class="survey-filters">
+                <h2>Featured Surveys</h2>
+                <div class="filter-options">
+                    <select>
+                        <option>All Categories</option>
+                        <option>Fakultas Ekonomi</option>
+                        <option>Fakultas Filsafat</option>
+                        <option>Fakultas Keguruan & Ilmu Pendidikan</option>
+                        <option>Fakultas Pertanian</option>
+                        <option>Fakultas Ilmu Komputer</option>
+                        <option>Fakultas Ilmu Keperawatan</option>
+                        <option>Program Diploma III (D3)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="survey-grid">
+                <!-- Survey Card 1 -->
+                <div class="survey-card">
+                    <div class="survey-reward-banner">Featured Survey • 50 Points Reward</div>
+                    <div class="survey-card-content">
+                        <h3>User Experience in Mobile Applications</h3>
+                        <div class="survey-meta">
+                            <div class="creator-info">
+                                By: JohnDoe
+                                <span class="creator-badge" title="Expert Researcher">⭐</span>
+                            </div>
+                            <span>5 min</span>
+                        </div>
+                        <p class="survey-desc">Help us understand how users interact with mobile applications and what features they find most useful.</p>
+                        <div class="tags">
+                            <span class="tag">UX</span>
+                            <span class="tag">Mobile</span>
+                            <span class="tag">Informatika</span>
+                        </div>
+                        <div class="survey-actions">
+                            <span>23 responses</span>
+                            <a href="#" class="btn">Take Survey</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survey Card 2 -->
+                <div class="survey-card">
+                    <div class="survey-card-content">
+                        <h3>Mental Health During the Pandemic</h3>
+                        <div class="survey-meta">
+                            <div class="creator-info">
+                                By: ResearchTeam
+                                <span class="creator-badge" title="Research Master">★</span>
+                            </div>
+                            <span>10 min</span>
+                        </div>
+                        <p class="survey-desc">A study on how the pandemic has affected mental health and coping mechanisms among different age groups.</p>
+                        <div class="tags">
+                            <span class="tag">Keperawatan</span>
+                            <span class="tag">Health</span>
+                            <span class="tag">Ners</span>
+                        </div>
+                        <div class="survey-actions">
+                            <span class="points-reward">+30 pts</span>
+                            <a href="#" class="btn">Take Survey</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survey Card 3 -->
+                <div class="survey-card">
+                    <div class="survey-card-content">
+                        <h3>Programming Language Preferences</h3>
+                        <div class="survey-meta">
+                            <div class="creator-info">
+                                By: TechResearcher
+                                <span class="creator-badge" title="Survey Champion">◆</span>
+                            </div>
+                            <span>7 min</span>
+                        </div>
+                        <p class="survey-desc">Share your experiences and preferences regarding different programming languages and development environments.</p>
+                        <div class="tags">
+                            <span class="tag">Sistem Informasi</span>
+                            <span class="tag">Informatika</span>
+                            <span class="tag">Development</span>
+                        </div>
+                        <div class="survey-actions">
+                            <span class="points-reward">+25 pts</span>
+                            <a href="#" class="btn">Take Survey</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Badge showcase -->
+        <section class="badge-showcase">
+            <h2>Unlock Badges & Special Titles</h2>
+            <div class="badge-grid">
+                <div class="badge-item gold">
+                    <div class="badge-icon">★</div>
+                    <div class="badge-name">Research Master</div>
+                    <div class="badge-req">Complete 50 surveys</div>
+                </div>
+                <div class="badge-item silver">
+                    <div class="badge-icon">⭐</div>
+                    <div class="badge-name">Expert Researcher</div>
+                    <div class="badge-req">Complete 25 surveys</div>
+                </div>
+                <div class="badge-item bronze">
+                    <div class="badge-icon">◆</div>
+                    <div class="badge-name">Survey Champion</div>
+                    <div class="badge-req">Complete 10 surveys</div>
+                </div>
+                <div class="badge-item blue">
+                    <div class="badge-icon">🔍</div>
+                    <div class="badge-name">Data Detective</div>
+                    <div class="badge-req">5,000 points earned</div>
+                </div>
+                <div class="badge-item green">
+                    <div class="badge-icon">📊</div>
+                    <div class="badge-name">Analytics Ace</div>
+                    <div class="badge-req">Create 10 surveys</div>
+                </div>
+                <div class="badge-item purple">
+                    <div class="badge-icon">🏆</div>
+                    <div class="badge-name">Top Contributor</div>
+                    <div class="badge-req">Reach leaderboard top 10</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard -->
+        <section class="leaderboard">
+            <h2>Top Contributors</h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th class="leaderboard-rank">Rank</th>
+                        <th>User</th>
+                        <th>Badges</th>
+                        <th>Points</th>
+                        <th>Surveys Completed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="leaderboard-rank rank-1">1</td>
+                        <td>
+                            <div class="creator-info">
+                                ResearchPro
+                                <span class="creator-badge gold">★</span>
+                            </div>
+                        </td>
+                        <td>7 badges</td>
+                        <td>8,450</td>
+                        <td>124</td>
+                    </tr>
+                    <tr>
+                        <td class="leaderboard-rank rank-2">2</td>
+                        <td>
+                            <div class="creator-info">
+                                DataQueen
+                                <span class="creator-badge gold">★</span>
+                            </div>
+                        </td>
+                        <td>6 badges</td>
+                        <td>7,890</td>
+                        <td>105</td>
+                    </tr>
+                    <tr>
+                        <td class="leaderboard-rank rank-3">3</td>
+                        <td>
+                            <div class="creator-info">
+                                SurveyMaster
+                                <span class="creator-badge gold">★</span>
+                            </div>
+                        </td>
+                        <td>5 badges</td>
+                        <td>6,720</td>
+                        <td>89</td>
+                    </tr>
+                    <tr>
+                        <td class="leaderboard-rank">4</td>
+                        <td>
+                            <div class="creator-info">
+                                AcademicSearch
+                                <span class="creator-badge silver">⭐</span>
+                            </div>
+                        </td>
+                        <td>4 badges</td>
+                        <td>5,340</td>
+                        <td>71</td>
+                    </tr>
+                    <tr class="user-row">
+                        <td class="leaderboard-rank">12</td>
+                        <td>
+                            <div class="creator-info">
+                                MikeUser
+                                <span class="creator-badge gold">★</span>
+                            </div>
+                        </td>
+                        <td>3 badges</td>
+                        <td>2,450</td>
+                        <td>32</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Unkvey. All rights reserved.</p>
+    </footer>
+</body>
+</html>
